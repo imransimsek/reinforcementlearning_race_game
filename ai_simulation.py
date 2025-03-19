@@ -17,9 +17,9 @@ class YapayOyuncu:
         self.son_checkpoint_zamani = 0
         self.fitness = 0
         self.aktif = True
-        self.beyin = np.random.uniform(-1, 1, (5, 3))  # 5 input, 3 output (ileri, sol, sağ)
+        self.beyin = np.random.uniform(-1, 1, (5, 3))  
         self.son_gecis = False
-        self.sensor_mesafeler = [0] * 5  # 5 sensör
+        self.sensor_mesafeler = [0] * 5 
         
     def sensor_guncelle(self, pist_noktalari):
         # 5 farklı açıda sensör
@@ -29,8 +29,8 @@ class YapayOyuncu:
             self.sensor_mesafeler[i] = self.mesafe_olc(sensor_aci, pist_noktalari)
     
     def mesafe_olc(self, sensor_aci, pist_noktalari):
-        # Sensör ışını ile duvar arasındaki mesafeyi ölç
-        max_mesafe = 200
+        
+        max_mesafe = 200 
         sensor_x = self.x
         sensor_y = self.y
         
@@ -44,10 +44,9 @@ class YapayOyuncu:
         return max_mesafe
     
     def karar_ver(self):
-        # Sensör verilerini normalize et
-        inputs = np.array(self.sensor_mesafeler) / 200.0
         
-        # Neural network çıktısı
+        inputs = np.array(self.sensor_mesafeler) / 200.0
+
         outputs = np.dot(inputs, self.beyin)
         outputs = 1 / (1 + np.exp(-outputs))  # sigmoid
         
@@ -66,21 +65,21 @@ class Jenerasyon:
         self.aktif_oyuncu_sayisi = populasyon_sayisi
     
     def yeni_jenerasyon_olustur(self):
-        # Fitness değerlerine göre sırala
+       
         self.oyuncular.sort(key=lambda x: x.fitness, reverse=True)
         
-        # En iyi fitness'ı güncelle
+       
         if self.oyuncular[0].fitness > self.en_iyi_fitness:
             self.en_iyi_fitness = self.oyuncular[0].fitness
         
-        # Yeni jenerasyon için en iyi oyuncuları seç
+       
         yeni_oyuncular = []
         
-        # En iyi %10'u direkt aktar
+       
         elit_sayisi = self.populasyon_sayisi // 10
         yeni_oyuncular.extend([self.oyuncu_kopyala(oyuncu) for oyuncu in self.oyuncular[:elit_sayisi]])
         
-        # Geri kalanı mutasyon ve çaprazlama ile oluştur
+      
         while len(yeni_oyuncular) < self.populasyon_sayisi:
             ebeveyn1 = self.secim_yap()
             ebeveyn2 = self.secim_yap()
@@ -92,7 +91,7 @@ class Jenerasyon:
         self.jenerasyon_no += 1
         self.aktif_oyuncu_sayisi = self.populasyon_sayisi
         
-        # Jenerasyon verilerini kaydet
+       
         self.jenerasyon_kaydet()
     
     def secim_yap(self):
@@ -136,7 +135,7 @@ def simulasyon_baslat():
     clock = pygame.time.Clock()
     
     jenerasyon = Jenerasyon(100)
-    max_yasam_suresi = 1000  # Her oyuncu için maksimum yaşam süresi
+    max_yasam_suresi = 1000  
     
     while True:
         for event in pygame.event.get():
@@ -148,31 +147,28 @@ def simulasyon_baslat():
                     pygame.quit()
                     return
         
-        # Ekranı temizle
+       
         ekran.fill(YESIL)
         pist_ciz(ekran)
         start_cizgisi_ciz(ekran)
         
-        # Her aktif oyuncuyu güncelle
+       
         for oyuncu in jenerasyon.oyuncular:
             if not oyuncu.aktif:
                 continue
             
-            # Sensörleri güncelle
             oyuncu.sensor_guncelle(pist_noktalari_olustur())
-            
-            # Yapay zeka kararı
+      
             kararlar = oyuncu.karar_ver()
-            
-            # Kararları uygula
-            if kararlar[0]:  # İleri
+     
+            if kararlar[0]:  
                 oyuncu.hiz = min(oyuncu.hiz + ivmelenme, max_hiz)
             else:
                 oyuncu.hiz = max(0, oyuncu.hiz - sürtünme)
             
-            if kararlar[1]:  # Sol
+            if kararlar[1]:  
                 oyuncu.aci += hesapla_donme_hizi(oyuncu.hiz, max_hiz)
-            if kararlar[2]:  # Sağ
+            if kararlar[2]:  
                 oyuncu.aci -= hesapla_donme_hizi(oyuncu.hiz, max_hiz)
             
             # Pozisyon güncelle
@@ -196,18 +192,18 @@ def simulasyon_baslat():
                 oyuncu.aktif = False
                 jenerasyon.aktif_oyuncu_sayisi -= 1
             
-            # Yaşam süresini güncelle
+          
             oyuncu.yasam_suresi += 1
             
-            # Maksimum süre kontrolü
+          
             if oyuncu.yasam_suresi >= max_yasam_suresi:
                 oyuncu.aktif = False
                 jenerasyon.aktif_oyuncu_sayisi -= 1
             
-            # Oyuncuyu çiz
+            
             araba_ciz(ekran, oyuncu.x, oyuncu.y, oyuncu.aci)
         
-        # Jenerasyon bilgilerini göster
+        
         font = pygame.font.Font(None, 36)
         gen_text = font.render(f'Jenerasyon: {jenerasyon.jenerasyon_no}', True, SIYAH)
         aktif_text = font.render(f'Aktif: {jenerasyon.aktif_oyuncu_sayisi}', True, SIYAH)
@@ -220,13 +216,13 @@ def simulasyon_baslat():
         pygame.display.flip()
         clock.tick(60)
         
-        # Jenerasyon bitti mi kontrol et
+        
         if jenerasyon.aktif_oyuncu_sayisi == 0:
-            # Fitness değerlerini hesapla
+            
             for oyuncu in jenerasyon.oyuncular:
                 oyuncu.fitness_hesapla()
             
-            # Yeni jenerasyon oluştur
+           
             jenerasyon.yeni_jenerasyon_olustur()
 
 if __name__ == "__main__":

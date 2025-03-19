@@ -18,15 +18,15 @@ def hesapla_donme_hizi(hiz, max_hiz):
 
 def start_cizgisinden_gecti(x, y, eski_x, eski_y):
     """Start çizgisinden geçişi kontrol eder"""
-    # Start çizgisi koordinatları (300, 375) - (300, 425)
-    if 375 <= y <= 425:  # Y koordinatı doğru aralıkta mı?
-        if eski_x < 300 and x >= 300:  # Soldan sağa geçiş
+
+    if 375 <= y <= 425:  
+        if eski_x < 300 and x >= 300:  
             return True
     return False
 
 # Sabitler
 max_hiz = 10
-min_hiz = 0.2  # Minimum hız eklendi
+min_hiz = 0.2  
 ivmelenme = 0.2
 sürtünme = 0.05
 
@@ -48,16 +48,14 @@ class GelistirilmisYapayOyuncu:
         self.x = 300
         self.y = 400
         self.aci = 0
-        self.hiz = min_hiz  # Başlangıç hızı minimum hız olarak ayarlandı
+        self.hiz = min_hiz  
         self.tur_sayisi = 0
         self.yasam_suresi = 0
         self.fitness = 0
         self.aktif = True
         self.son_gecis = False
-        self.hareket_etmeme_sayaci = 0  # Hareket etmeme durumunu kontrol etmek için
+        self.hareket_etmeme_sayaci = 0  
         self.son_konum = (self.x, self.y)
-        
-        # Sensör sistemi
         self.sensor_sayisi = 5
         self.sensor_mesafeler = [0] * self.sensor_sayisi
         self.son_pozisyonlar = []
@@ -92,8 +90,8 @@ class GelistirilmisYapayOyuncu:
     def fitness_hesapla(self):
         """Geliştirilmiş fitness hesaplama"""
         tur_bonus = self.tur_sayisi * 10000
-        mesafe_bonus = self.yasam_suresi * self.hiz  # Hız bazlı mesafe bonusu
-        hareket_cezasi = max(0, self.hareket_etmeme_sayaci * 100)  # Hareketsizlik cezası
+        mesafe_bonus = self.yasam_suresi * self.hiz  
+        hareket_cezasi = max(0, self.hareket_etmeme_sayaci * 100)  
         
         self.fitness = tur_bonus + mesafe_bonus - hareket_cezasi
 
@@ -107,14 +105,14 @@ class GelistirilmisYapayOyuncu:
         
         self.son_konum = (self.x, self.y)
         
-        # Uzun süre hareketsiz kalırsa devre dışı bırak
-        if self.hareket_etmeme_sayaci > 100:  # 100 frame hareketsizlik limiti
+       
+        if self.hareket_etmeme_sayaci > 100:  
             self.aktif = False
             return False
         return True
 
 class GelistirilmisJenerasyon:
-    def __init__(self, populasyon_sayisi=30):  # Populasyon sayısını daha da azalttık
+    def __init__(self, populasyon_sayisi=30): 
         self.populasyon_sayisi = populasyon_sayisi
         self.oyuncular = [GelistirilmisYapayOyuncu() for _ in range(populasyon_sayisi)]
         self.jenerasyon_no = 1
