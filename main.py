@@ -269,7 +269,7 @@ def main():
                     
                   
                     if start_cizgisinden_gecti(yeni_x, yeni_y, eski_x, eski_y):
-                        if not durum['son_gecis']:  # Çift sayimi önle
+                        if not durum['son_gecis']:  
                             durum['tur_sayisi'] += 1
                             if durum['tur_sayisi'] > durum['en_iyi_tur']:
                                 durum['en_iyi_tur'] = durum['tur_sayisi']
@@ -287,7 +287,7 @@ def main():
             ekran.blit(hiz_text, (10, 10))
             ekran.blit(tur_text, (10, 40))
         
-        # Eğitim modu durumunu göster
+        
         mod_text = font_kucuk.render('Eğitim Modu: ' + ('Açik' if egitim_modu else 'Kapali'), True, SIYAH)
         ekran.blit(mod_text, (10, YUKSEKLIK - 30))
         
